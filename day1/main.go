@@ -10,9 +10,30 @@ import (
 	"strings"
 )
 
-func Day1() {
+var spelledDigitRegex = regexp.MustCompile(`(one|two|three|four|five|six|seven|eight|nine|\d)`)
 
-	digitRegex := regexp.MustCompile(`\d`)
+var DigitMap = map[string]int{
+	"one":   1,
+	"two":   2,
+	"three": 3,
+	"four":  4,
+	"five":  5,
+	"six":   6,
+	"seven": 7,
+	"eight": 8,
+	"nine":  9,
+	"1":     1,
+	"2":     2,
+	"3":     3,
+	"4":     4,
+	"5":     5,
+	"6":     6,
+	"7":     7,
+	"8":     8,
+	"9":     9,
+}
+
+func Day1() {
 
 	path, err := filepath.Abs("day1/input.txt")
 	if err != nil {
@@ -29,24 +50,37 @@ func Day1() {
 
 	values := strings.Split(content, "\n")
 
-	// holds the sum of all calibrated values
-	var sum int64
+	sum := ParseWithSpelledDigits(values, spelledDigitRegex)
+	fmt.Printf("Sum: %v\n", sum)
+}
 
+func ParseWithSpelledDigits(values []string, regex *regexp.Regexp) int64 {
+	var sum int64
 	for v := range values {
 		alteredText := values[v]
 
-		// -1 to get all matches
-		digits := digitRegex.FindAllString(alteredText, -1)
+		// TODO: Add logic to identify "twone" as two, one both
 
-		if len(digits) == 0 {
-			continue
+		// -1 to get all matches
+		digits := regex.FindAllString(alteredText, -1)
+
+		// pre allocation to avoid making new copies each time adding the mapped digit
+		intDigits := make([]int, len(digits))
+
+		for digit := range digits {
+			// transformation of the digit to integer
+			intDigits[digit] = DigitMap[digits[digit]]
 		}
 
-		firstDigit := digits[0]
-		lastDigit := digits[len(digits)-1]
+		// if len(intDigits) == 0 {
+		// 	continue
+		// }
+
+		firstDigit := intDigits[0]
+		lastDigit := intDigits[len(intDigits)-1]
 
 		// string concatenation to get the 2 digit number
-		calibrationString := firstDigit + lastDigit
+		calibrationString := fmt.Sprintf("%d%d", firstDigit, lastDigit)
 
 		calibrationValue, err := strconv.ParseInt(calibrationString, 10, 8)
 		if err != nil {
@@ -57,5 +91,6 @@ func Day1() {
 
 	}
 
-	fmt.Printf("Sum: %v\n", sum)
+	return sum
+
 }
