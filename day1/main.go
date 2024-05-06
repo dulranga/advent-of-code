@@ -3,11 +3,10 @@ package day1
 import (
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 	"regexp"
 	"strconv"
-	"strings"
+
+	"github.com/dulranga/advent-of-code/helpers"
 )
 
 var spelledDigitRegex = regexp.MustCompile(`(one|two|three|four|five|six|seven|eight|nine|\d)`)
@@ -34,22 +33,7 @@ var DigitMap = map[string]int{
 }
 
 func Day1() {
-
-	path, err := filepath.Abs("day1/input.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	rawData, err := os.ReadFile(path)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	content := string(rawData)
-
-	values := strings.Split(content, "\n")
-
+	values := helpers.ParseInputFile("day1/input.txt")
 	sum := ParseWithSpelledDigits(values, spelledDigitRegex)
 	fmt.Printf("Sum: %v\n", sum)
 }
@@ -72,9 +56,9 @@ func ParseWithSpelledDigits(values []string, regex *regexp.Regexp) int64 {
 			intDigits[digit] = DigitMap[digits[digit]]
 		}
 
-		// if len(intDigits) == 0 {
-		// 	continue
-		// }
+		if len(intDigits) == 0 {
+			continue
+		}
 
 		firstDigit := intDigits[0]
 		lastDigit := intDigits[len(intDigits)-1]
