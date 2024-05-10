@@ -19,6 +19,7 @@ type Record struct {
 	GameId int
 }
 
+/* Number of times balls picked in each round */
 type Count struct {
 	Red   []int
 	Green []int
@@ -59,6 +60,7 @@ func (r *Record) IsPossible(check CheckRecord) bool {
 	return true
 }
 
+/* Get the minimum amount of balls in each color required to play this game */
 func (r *Record) GetMinPossibleCheckRecord() CheckRecord {
 	return CheckRecord{
 		Blue:  helpers.GetMax(r.Count.Blue),
