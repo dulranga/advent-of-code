@@ -23,3 +23,5 @@ go.work
 
 # Air temp files
 tmp/
+
+.DS_Store
