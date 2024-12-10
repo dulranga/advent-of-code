@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/dulranga/advent-of-code/day3"
-)
+import "github.com/dulranga/advent-of-code/2023/day3"
 
 func main() {
 	// day1.Day1()

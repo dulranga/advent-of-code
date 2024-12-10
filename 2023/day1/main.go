@@ -33,7 +33,7 @@ var DigitMap = map[string]int{
 }
 
 func Day1() {
-	values := helpers.ParseInputFile("day1/input.txt")
+	values := helpers.ParseInputFile("2023/day1/input.txt")
 	sum := ParseWithSpelledDigits(values, spelledDigitRegex)
 	fmt.Printf("Sum: %v\n", sum)
 }

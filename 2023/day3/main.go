@@ -15,7 +15,7 @@ func Day3() {
 	specialSymbolCheck := regexp.MustCompile(`[^0-9.]`)
 	digitCheck := regexp.MustCompile(`[0-9]+`)
 
-	input := helpers.ParseInputFile("day3/input.txt")
+	input := helpers.ParseInputFile("2023/day3/input.txt")
 
 	for lineIdx, row := range input {
 		found := digitCheck.FindAllStringIndex(row, -1)

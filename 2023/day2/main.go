@@ -13,7 +13,7 @@ func Day2() {
 		Green: 13,
 		Blue:  14,
 	}
-	records := helpers.ParseInputFile("day2/input.txt")
+	records := helpers.ParseInputFile("2023/day2/input.txt")
 
 	var sum int
 	var totalPower int
