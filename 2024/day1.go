@@ -2,6 +2,8 @@ package challenges2024
 
 import (
 	"fmt"
+	"math"
+	"slices"
 
 	"github.com/dulranga/advent-of-code/helpers"
 )
@@ -50,14 +52,36 @@ Your actual left and right lists contain many location IDs. What is the total di
 */
 func Day1() {
 	var sum int
-	// specialSymbolCheck := regexp.MustCompile(`[^0-9.]`)
-	// digitCheck := regexp.MustCompile(`[0-9]+`)
 
-	input := helpers.ParseInputFile("2024/day1/input.txt")
+	input := helpers.ParseInputFile("2024/inputs/day1.txt")
+	inputSize := len(input)
 
-	for lineIdx, row := range input {
-		fmt.Printf("row: %v\n", row)
-		fmt.Printf("lineIdx: %v\n", lineIdx)
+	// pre occupy two arrays to speed things up
+	left := make([]int, inputSize)
+	right := make([]int, inputSize)
+
+	// parsing location ids from each statement
+	for i, row := range input {
+		var l int
+		var r int
+
+		fmt.Sscanf(row, "%d   %d", &l, &r)
+
+		// we can only do this cuz the array is pre defined with correct size
+		left[i] = l
+		right[i] = r
+
+	}
+
+	slices.Sort(left)
+	slices.Sort(right)
+
+	for i := range left {
+		l := left[i]
+		r := right[i]
+
+		sum += int(math.Abs(float64(r - l)))
+
 	}
 
 	fmt.Printf("sum: %v\n", sum)
