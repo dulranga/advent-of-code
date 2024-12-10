@@ -1,4 +1,4 @@
-package day1
+package challenges2023
 
 import (
 	"fmt"
