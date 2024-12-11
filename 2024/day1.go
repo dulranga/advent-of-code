@@ -50,9 +50,14 @@ In the example list above, the pairs and distances would be as follows:
 
 Your actual left and right lists contain many location IDs. What is the total distance between your lists?
 */
-func Day1() {
+func Day1(inputPath string) {
 
-	input := helpers.ParseInputFile("2024/inputs/day1.txt")
+	left, right := GetSortedLists(inputPath)
+	fmt.Printf("sum: %v\n", CalculateDistancePart2(left, right))
+}
+
+func GetSortedLists(inputPath string) ([]int, []int) {
+	input := helpers.ParseInputFile(inputPath)
 	inputSize := len(input)
 
 	// pre occupy two arrays to speed things up
@@ -75,10 +80,10 @@ func Day1() {
 	slices.Sort(left)
 	slices.Sort(right)
 
-	fmt.Printf("sum: %v\n", calculateDistancePart2(left, right))
+	return left, right
 }
 
-func calculateDistancePart1(left, right []int) int {
+func CalculateDistancePart1(left, right []int) int {
 	var sum int
 
 	for i := range left {
@@ -122,7 +127,7 @@ So, for these example lists, the similarity score at the end of this process is 
 
 Once again consider your left and right lists. What is their similarity score?
 */
-func calculateDistancePart2(left, right []int) int {
+func CalculateDistancePart2(left, right []int) int {
 
 	previousIterationLookupEnd := 0
 	totalSimilarityScore := 0
@@ -155,6 +160,27 @@ func calculateDistancePart2(left, right []int) int {
 
 	}
 	return totalSimilarityScore
+}
+
+func CalculateDistancePart2Basic(left, right []int) int {
+
+	totalSimilarityScore := 0
+
+	for _, leftItem := range left {
+		localRepeatCount := 0
+		for _, rightItem := range right {
+			if leftItem == rightItem {
+				localRepeatCount++
+			}
+
+		}
+
+		totalSimilarityScore += leftItem * localRepeatCount
+
+	}
+
+	return totalSimilarityScore
+
 }
 
 // this function gives the last index of a sorted array where you can find the lookupItem
@@ -196,3 +222,19 @@ func BinaryLookup(list []int, lookupItem int, __startingIdx int) int {
 	}
 
 }
+
+/*
+BENCHMARKS
+
+1000 inputs
+BenchmarkDay1Part2-8        	   45723	     26,084 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay1Part2Basic-8   	    3615	    391,634 ns/op	       0 B/op	       0 allocs/op
+
+10,000 inputs
+BenchmarkDay1Part2-8        	    1251	     955,444 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay1Part2Basic-8   	      36	  32,768,434 ns/op	       0 B/op	       0 allocs/op
+
+100,000 inputs
+BenchmarkDay1Part2-8        	      14	   78,735,991 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDay1Part2Basic-8   	       1	3,332,771,666 ns/op	       0 B/op	       0 allocs/op
+*/
