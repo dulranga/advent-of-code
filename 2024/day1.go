@@ -51,7 +51,6 @@ In the example list above, the pairs and distances would be as follows:
 Your actual left and right lists contain many location IDs. What is the total distance between your lists?
 */
 func Day1() {
-	var sum int
 
 	input := helpers.ParseInputFile("2024/inputs/day1.txt")
 	inputSize := len(input)
@@ -76,6 +75,12 @@ func Day1() {
 	slices.Sort(left)
 	slices.Sort(right)
 
+	fmt.Printf("sum: %v\n", calculateDistancePart2(left, right))
+}
+
+func calculateDistancePart1(left, right []int) int {
+	var sum int
+
 	for i := range left {
 		l := left[i]
 		r := right[i]
@@ -84,5 +89,110 @@ func Day1() {
 
 	}
 
-	fmt.Printf("sum: %v\n", sum)
+	return sum
+}
+
+/*
+--- Part Two ---
+Your analysis only confirmed what everyone feared: the two lists of location IDs are indeed very different.
+
+Or are they?
+
+The Historians can't agree on which group made the mistakes or how to read most of the Chief's handwriting, but in the commotion you notice an interesting detail: a lot of location IDs appear in both lists! Maybe the other numbers aren't location IDs at all but rather misinterpreted handwriting.
+
+This time, you'll need to figure out exactly how often each number from the left list appears in the right list. Calculate a total similarity score by adding up each number in the left list after multiplying it by the number of times that number appears in the right list.
+
+Here are the same example lists again:
+
+3   4
+4   3
+2   5
+1   3
+3   9
+3   3
+For these example lists, here is the process of finding the similarity score:
+
+The first number in the left list is 3. It appears in the right list three times, so the similarity score increases by 3 * 3 = 9.
+The second number in the left list is 4. It appears in the right list once, so the similarity score increases by 4 * 1 = 4.
+The third number in the left list is 2. It does not appear in the right list, so the similarity score does not increase (2 * 0 = 0).
+The fourth number, 1, also does not appear in the right list.
+The fifth number, 3, appears in the right list three times; the similarity score increases by 9.
+The last number, 3, appears in the right list three times; the similarity score again increases by 9.
+So, for these example lists, the similarity score at the end of this process is 31 (9 + 4 + 0 + 0 + 9 + 9).
+
+Once again consider your left and right lists. What is their similarity score?
+*/
+func calculateDistancePart2(left, right []int) int {
+
+	previousIterationLookupEnd := 0
+	totalSimilarityScore := 0
+
+	for _, item := range left {
+
+		itemRepeatCount := 0
+		lookup := BinaryLookup(right, item, 0)
+
+		if lookup == -1 {
+			// item not found in the list
+			continue
+		}
+		searchableArray := right[previousIterationLookupEnd : lookup+1]
+
+		if right[lookup] != item {
+			// if the array ends with similar items we need the items to be counted in the next iteration as well
+			// so we do NOT truncate the array in this case
+			previousIterationLookupEnd = lookup
+
+		}
+
+		for _, searchItem := range searchableArray {
+			if item == searchItem {
+				itemRepeatCount++
+			}
+		}
+
+		totalSimilarityScore += item * itemRepeatCount
+
+	}
+	return totalSimilarityScore
+}
+
+// this function gives the last index of a sorted array where you can find the lookupItem
+// this uses binary search to look for the item
+func BinaryLookup(list []int, lookupItem int, __startingIdx int) int {
+
+	size := len(list)
+
+	midItemIdx := int(size / 2)
+	midItem := list[midItemIdx]
+	lastIdx := size - 1
+
+	if lookupItem > list[lastIdx] || lookupItem < list[0] {
+		// not found
+		// lookup item is either smaller or greater than the list
+		return -1
+	}
+	if lookupItem == list[lastIdx] {
+		// last item in the array
+		return __startingIdx + lastIdx
+	}
+
+	if lookupItem < midItem {
+		return BinaryLookup(list[:midItemIdx], lookupItem, __startingIdx)
+
+	} else if lookupItem > midItem {
+		return BinaryLookup(list[midItemIdx:], lookupItem, __startingIdx+midItemIdx)
+
+	} else {
+		// lookup item is exactly equal
+		var current = midItemIdx
+		for {
+			// looping to find if multiple copies included
+			current++
+			if lookupItem < list[current] {
+				return current + __startingIdx - 1
+			}
+		}
+	}
+
 }
